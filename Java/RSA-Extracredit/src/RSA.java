@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * @author Jecasn Blanco
@@ -122,11 +123,8 @@ public class RSA {
     private static String decode(int[] encodedMessage) {
         assert encodedMessage != null && encodedMessage.length > 0;
         StringBuilder sb = new StringBuilder();
-        int encodeLength = encodeKey.length();
         for (int numbers : encodedMessage) {
-            //System.out.printf("Number: %s", numbers);
-            sb.append(encodeKey.charAt((numbers / 100) % encodeLength)
-            ).append(encodeKey.charAt((numbers % 100) % encodeLength));
+            sb.append(encodeKey.charAt(numbers % encodeKey.length()));
         }
         return sb.toString();
     }
@@ -138,21 +136,14 @@ public class RSA {
      * @return an array of encoded characters
      */
     private static int[] encode(String message) {
-//        System.out.printf("Message: %s\n", message);
         assert message != null && message.length() > 0;
         message = message.toUpperCase();
-        int[] encoded = new int[3];
-        int j = -1;
-        for (int i = 0; i < encoded.length; ++i) {
-            encoded[i] = encodeKey.indexOf(message.charAt(++j)) * 100; // first
-            encoded[i] += encodeKey.indexOf(message.charAt(++j));  // second
-        }
+        char[] chars = message.toCharArray();
+        int[] encoded = new int[message.length()];
+        int i = 0;
+        for (char c : chars)
+            encoded[i++] = encodeKey.indexOf(c);
 
-//        System.out.println("Encoded:");
-//        for(int i : encoded){
-//            System.out.printf("%d ",i);
-//        }
-        System.out.println();
         return encoded;
     }
 
@@ -166,9 +157,9 @@ public class RSA {
      */
     private static int[] extendedEuclidean(int n, int m) {
         assert n > 0;
-        System.out.printf("[%-10d,%+10d]\n", n, m);
+//        System.out.printf("[%-10d,%+10d]\n", n, m);
         if (m == 0) {
-            System.out.printf("[%-10d,%+10d]\n", 1, 0);
+//            System.out.printf("[%-10d,%+10d]\n", 1, 0);
             return new int[]{1, 0};
         } else {
             int[] oldVals = extendedEuclidean(m, n % m);
@@ -178,7 +169,7 @@ public class RSA {
             oldVals[0] = oldJ;
             oldVals[1] = oldI - Math.floorDiv(n, m) * oldJ;
 
-            System.out.printf("[%-10d,%+10d]\n", oldVals[0], oldVals[1]);
+//            System.out.printf("[%-10d,%+10d]\n", oldVals[0], oldVals[1]);
             return oldVals;
         }
     }
@@ -186,30 +177,25 @@ public class RSA {
     /**
      * Encryption Menu ...
      */
-    private static void decryptionMenu() {
+    private static void decryptionMenu() throws IOException {
         System.out.println("[Encryption Menu]");
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(System.in));
-        try {
-            System.out.println("Enter your d:");
-            int d = Integer.parseInt(reader.readLine());
+        System.out.println("Enter your d:");
+        int d = Integer.parseInt(reader.readLine());
 
-            System.out.println("Enter your N:");
-            int N = Integer.parseInt(reader.readLine());
+        System.out.println("Enter your N:");
+        int N = Integer.parseInt(reader.readLine());
 
-            System.out.println("Enter your encrypted message separated by spaces:");
-            String message = reader.readLine();
-            int[] parsedMessage = parseToInts(message);
+        System.out.println("Enter your encrypted message separated by spaces:");
+        String message = reader.readLine();
+        int[] parsedMessage = parseToInts(message);
 
-            int[] decrypted = decrypt(new Key(d, N), parsedMessage);
-            System.out.printf("Encoded Decrypted: %s\n", print(decrypted));
-            System.out.println("Decrypted: " + decode(decrypted));
-            System.out.println("Press [ENTER] to continue...");
-            reader.readLine();
-        } catch (IOException e) {
-            System.err.println(WELL_MSG);
-            System.err.println(e);
-        }
+        int[] decrypted = decrypt(new Key(d, N), parsedMessage);
+        System.out.printf("Encoded Decrypted: %s\n", print(decrypted));
+        System.out.println("Decrypted: " + decode(decrypted));
+        System.out.println("Press [ENTER] to continue...");
+        reader.readLine();
     }
 
     /**
@@ -230,36 +216,31 @@ public class RSA {
         return numbers;
     }
 
-    private static void encryptionMenu() {
+    private static void encryptionMenu() throws IOException {
         System.out.println("[Encryption Menu]");
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(System.in));
-        try {
-            System.out.println("Enter your e:");
-            int e = Integer.parseInt(reader.readLine());
+        System.out.println("Enter your e:");
+        int e = Integer.parseInt(reader.readLine());
 
-            System.out.println("Enter your N:");
-            int N = Integer.parseInt(reader.readLine());
+        System.out.println("Enter your N:");
+        int N = Integer.parseInt(reader.readLine());
 
-            System.out.println("Enter your message: ( only accepts a-zA-Z and space)");
-            String message = reader.readLine();
+        System.out.println("Enter your message: ( only accepts a-zA-Z and space)");
+        String message = reader.readLine();
 
-            int[] encrypted = encrypt(new Key(e, N), encode(message));
+        int[] encrypted = encrypt(new Key(e, N), encode(message));
 
-            System.out.println("Message: " + message);
-            System.out.println("Encrypted: " + print(encrypted));
-            System.out.println("Press [ENTER] to continue...");
-            reader.readLine();
-        } catch (IOException e) {
-            System.err.println(WELL_MSG);
-            System.err.println(e);
-        }
+        System.out.println("Message: " + message);
+        System.out.println("Encrypted: " + print(encrypted));
+        System.out.println("Press [ENTER] to continue...");
+        reader.readLine();
     }
 
     private static String print(int[] message) {
         StringBuilder sb = new StringBuilder();
         for (int i : message) {
-            sb.append(String.format("%04d", i)).append(" ");
+            sb.append(String.format("%02d", i)).append(" ");
         }
         return sb.toString();
     }
@@ -313,20 +294,20 @@ public class RSA {
             }
         } catch (Exception e) {
             System.err.println(WELL_MSG);
-            System.err.println(e);
+            e.printStackTrace();
         }
 
 
     }
 
-    private static void demoMenu() {
+    private static void demoMenu() throws IOException {
         System.out.println("[DEMO MENU]");
-        int p = 71;
-        int q = 41;
-        int d = 81;
+        int p = 763;
+        int q = 341;
+        int d = 111;
 
 
-        String message = "HUZZAH";
+        String message = "ABCDEFGHI";
         System.out.printf("Using: p=%d q=%d d=%s\n", p, q, d);
         System.out.printf("φ=%s , N:%s\n", (p - 1) * (q - 1), p * q);
         Key keys[] = getKeys(p, q, d);
@@ -341,23 +322,10 @@ public class RSA {
         int decrypted[] = decrypt(keys[1], encrypted);
         System.out.printf("Encoded: %s\n", print(decrypted));
         System.out.printf("Decrypted: %s\n\n", decode(decrypted));
-        System.out.println("------------------------------------");
-
-        System.out.println("Partner provide cypher:");
-        encrypted = new int[]{2117, 1257, 444};
-        System.out.printf("Decrypting: %s\n", print(encrypted));
-        System.out.printf("Encoded: %s\n", print(decrypted));
-        System.out.printf("Decoded: %s\n", decode(encrypted));
-        decrypted = decrypt(keys[1], encrypted);
-        System.out.printf("Decrypted: %s\n\n", decode(decrypted));
 
 
-        try {
-            System.out.println("Press [ENTER] to continue...");
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Press [ENTER] to continue...");
+        System.in.read();
     }
 
     private static void keypairMenu() {
@@ -380,7 +348,7 @@ public class RSA {
 
         } catch (IOException e) {
             System.err.println(WELL_MSG);
-            System.err.println(e);
+            System.exit(1);
         }
 
     }
