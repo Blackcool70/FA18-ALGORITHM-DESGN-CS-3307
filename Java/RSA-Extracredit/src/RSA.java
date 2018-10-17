@@ -22,25 +22,28 @@ public class RSA {
         private final int ed, N;
 
         Key(int ed, int N) {
-            assert  ed > 0 && N > 0;
+            assert ed > 0 && N > 0;
             this.ed = ed;
             this.N = N;
         }
+
         public String toString() {
             return "(" + ed + "," + N + ")";
 
         }
 
     }
-    private  static int gcd(int n, int m){
-        if(m == 0) {
+
+    private static int gcd(int n, int m) {
+        if (m == 0) {
             return n;
-        }else {
+        } else {
             return gcd(m, n % m);
         }
     }
-    private  static boolean areCoPrime(int n, int m){
-        return  gcd(n,m) == 1;
+
+    private static boolean areCoPrime(int n, int m) {
+        return gcd(n, m) == 1;
 
     }
 
@@ -53,8 +56,8 @@ public class RSA {
      * @return private public key pair
      */
     private static Key[] getKeys(int p, int q, int d) {
-        assert  p > 0 && q > 0 && d > 0;
-        if(!(areCoPrime(p,q) && areCoPrime(p*q,d))){
+        assert p > 0 && q > 0 && d > 0;
+        if (!(areCoPrime(p, q) && areCoPrime(p * q, d))) {
             System.err.println("Non co-prime numbers were given.\nProgram aborting.");
             System.exit((1));
         }
@@ -119,9 +122,11 @@ public class RSA {
     private static String decode(int[] encodedMessage) {
         assert encodedMessage != null && encodedMessage.length > 0;
         StringBuilder sb = new StringBuilder();
+        int encodeLength = encodeKey.length();
         for (int numbers : encodedMessage) {
             //System.out.printf("Number: %s", numbers);
-            sb.append(encodeKey.charAt(numbers / 100)).append(encodeKey.charAt(numbers % 100));
+            sb.append(encodeKey.charAt((numbers / 100) % encodeLength)
+            ).append(encodeKey.charAt((numbers % 100) % encodeLength));
         }
         return sb.toString();
     }
@@ -160,7 +165,7 @@ public class RSA {
      * and integers  [0]=i and [1]=j such that gcd = in + jm
      */
     private static int[] extendedEuclidean(int n, int m) {
-        assert  n > 0 ;
+        assert n > 0;
         System.out.printf("[%-10d,%+10d]\n", n, m);
         if (m == 0) {
             System.out.printf("[%-10d,%+10d]\n", 1, 0);
@@ -173,7 +178,7 @@ public class RSA {
             oldVals[0] = oldJ;
             oldVals[1] = oldI - Math.floorDiv(n, m) * oldJ;
 
-             System.out.printf("[%-10d,%+10d]\n", oldVals[0], oldVals[1]);
+            System.out.printf("[%-10d,%+10d]\n", oldVals[0], oldVals[1]);
             return oldVals;
         }
     }
@@ -197,7 +202,7 @@ public class RSA {
             int[] parsedMessage = parseToInts(message);
 
             int[] decrypted = decrypt(new Key(d, N), parsedMessage);
-            System.out.printf("Encoded Decrypted: %s\n",print(decrypted));
+            System.out.printf("Encoded Decrypted: %s\n", print(decrypted));
             System.out.println("Decrypted: " + decode(decrypted));
             System.out.println("Press [ENTER] to continue...");
             reader.readLine();
@@ -209,7 +214,8 @@ public class RSA {
 
     /**
      * Breaks a string of numbers by spaces into an array of INTS.
-     * @param message  a string of numbers
+     *
+     * @param message a string of numbers
      * @return a array of integers corresponding to the string numbers
      */
     private static int[] parseToInts(String message) {
@@ -218,10 +224,10 @@ public class RSA {
         String strNumbers[] = message.trim().split(" ");
         int numbers[] = new int[strNumbers.length];
         int i = 0;
-        for(String num: strNumbers){
+        for (String num : strNumbers) {
             numbers[i++] = Integer.parseInt(num);
         }
-        return  numbers;
+        return numbers;
     }
 
     private static void encryptionMenu() {
@@ -253,7 +259,7 @@ public class RSA {
     private static String print(int[] message) {
         StringBuilder sb = new StringBuilder();
         for (int i : message) {
-            sb.append(String.format("%04d",i)).append(" ");
+            sb.append(String.format("%04d", i)).append(" ");
         }
         return sb.toString();
     }
@@ -281,7 +287,7 @@ public class RSA {
                 System.out.println("3 ) Quit");
                 System.out.print(">");
                 String input = reader.readLine().toLowerCase();
-                if(input.length() != 0)
+                if (input.length() != 0)
                     selection = input.charAt(0);
                 switch (selection) {
                     case 'x':
@@ -305,11 +311,10 @@ public class RSA {
 
 
             }
-        } catch ( Exception e) {
+        } catch (Exception e) {
             System.err.println(WELL_MSG);
             System.err.println(e);
         }
-
 
 
     }
@@ -321,30 +326,33 @@ public class RSA {
         int d = 81;
 
 
-        String message = "HURRAH";
-        System.out.printf("Using: p=%d q=%d d=%s\n",p,q,d);
-        System.out.printf("φ=%s , N:%s\n",(p-1)*(q-1),p*q);
-        Key keys[] = getKeys(p,q,d);
-        System.out.printf("Encrypt key:%s \nDecrypt key:%s\n",keys[0],keys[1]);
-        System.out.printf("Encrypting: %s\n",message);
+        String message = "HUZZAH";
+        System.out.printf("Using: p=%d q=%d d=%s\n", p, q, d);
+        System.out.printf("φ=%s , N:%s\n", (p - 1) * (q - 1), p * q);
+        Key keys[] = getKeys(p, q, d);
+        System.out.printf("Encrypt key:%s \nDecrypt key:%s\n", keys[0], keys[1]);
+        System.out.printf("Encrypting: %s\n", message);
         System.out.printf("Encoded: %s\n", print(encode(message)));
-        int encrypted[] = encrypt(keys[0],encode(message));
-        System.out.printf("Encrypted: %s\n\n",print(encrypted));
+        int encrypted[] = encrypt(keys[0], encode(message));
+        System.out.printf("Encrypted (encoded): %s\n\n", print(encrypted));
+        System.out.printf("Encrypted (decoded): %s\n\n", decode(encrypted));
 
-        System.out.printf("Decrypting: %s\n",print(encrypted));
-        int decrypted[] = decrypt(keys[1],encrypted);
+        System.out.printf("Decrypting: %s\n", print(encrypted));
+        int decrypted[] = decrypt(keys[1], encrypted);
         System.out.printf("Encoded: %s\n", print(decrypted));
-        System.out.printf("Decrypted: %s\n\n",decode(decrypted));
+        System.out.printf("Decrypted: %s\n\n", decode(decrypted));
         System.out.println("------------------------------------");
 
-        encrypted = new int[]{2117,1257,444};
-        System.out.printf("Decrypting(Ibsa Provided): %s\n",print(encrypted));
-        decrypted = decrypt(keys[1],encrypted);
+        System.out.println("Partner provide cypher:");
+        encrypted = new int[]{2117, 1257, 444};
+        System.out.printf("Decrypting: %s\n", print(encrypted));
         System.out.printf("Encoded: %s\n", print(decrypted));
-        System.out.printf("Decrypted: %s\n\n",decode(decrypted));
+        System.out.printf("Decoded: %s\n", decode(encrypted));
+        decrypted = decrypt(keys[1], encrypted);
+        System.out.printf("Decrypted: %s\n\n", decode(decrypted));
 
 
-        try{
+        try {
             System.out.println("Press [ENTER] to continue...");
             System.in.read();
         } catch (IOException e) {
