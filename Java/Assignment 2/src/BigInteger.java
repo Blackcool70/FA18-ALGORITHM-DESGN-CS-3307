@@ -1,26 +1,54 @@
-public class BigInteger {
-    private final  int[] INTS;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
-    public BigInteger(String s) {
-        INTS = new int[s.length()];
-        int i = 0;
-        for(char c : s.toCharArray()) {
-           INTS[i++]  = c & 0x0F;
+public class BigInteger {
+    private ArrayList<Integer> digits;
+    private int sign;
+
+    private BigInteger(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        sign = sb.charAt(0) == '-' ? -1 : 1;
+        sb.delete(0,0);
+        sb = sb.reverse();
+
+        digits = new ArrayList<>(s.length() - sign);
+        //adds the digits backwards for easier growth;
+        for(char c: sb.toString().toCharArray()){
+            digits.add(c & 0x0F);
         }
     }
-    public String toString(){
+
+    private BigInteger(BigInteger other) {
+        digits = (ArrayList<Integer>) other.digits.clone();
+    }
+
+    public static BigInteger add(BigInteger u, BigInteger v) {
+        int uSize = u.digits.size(), vSize = v.digits.size();
+        return new BigInteger("temp");
+    }
+
+    BigInteger pow(BigInteger u, BigInteger v) {
+        return new BigInteger("0");
+    }
+
+    public static int parseInt(BigInteger b) {
+        return Integer.parseInt(b.toString());
+    }
+
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(int i : INTS){
+        for (int i : digits) {
             sb.append(i);
         }
-        return  sb.toString();
+        return sb.reverse().toString();
     }
 
     public static void main(String[] args) {
 
         BigInteger a = new BigInteger("123");
-        System.out.println(a.toString());
-
+        BigInteger b = new BigInteger(a);
+        System.out.printf("a %s\n",a.toString());
+        System.out.printf("b %s\n",b.toString());
 
 
     }
