@@ -43,6 +43,11 @@ public class LargeInteger {
         }
         return sb.reverse().toString();
     }
+    private boolean equals(LargeInteger other){
+        if(this == other) return  true;
+        if(this.sign != other.sign) return  false;
+        return this.digits.equals(other.digits);
+    }
     private boolean isGreaterThan(LargeInteger other){
         if(this == other) return  false;
         if (other.digits.size() < this.digits.size()) return true;
@@ -64,9 +69,7 @@ public class LargeInteger {
 
     public static void main(String[] args) {
 
-        LargeInteger a = new LargeInteger("110");
-        LargeInteger b = new LargeInteger("109");
-        System.out.printf("a > b is %b\n",a.isGreaterThan(b));
+        System.out.printf("a == b is %b\n",a.equals(b));
 
 
     }
