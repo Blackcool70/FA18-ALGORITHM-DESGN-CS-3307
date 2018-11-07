@@ -96,6 +96,7 @@ public class LargeInteger {
 
     private static LargeInteger sMod(LargeInteger a, int k) {
         LargeInteger result;
+
         if (k > 0) {
             result = new LargeInteger(a);
             result.digits.clear();
@@ -139,7 +140,7 @@ public class LargeInteger {
         Collections.reverse(digits);
         removeLeadingZeros();
         for (int i : digits) {
-                sb.append(i);
+                sb.append(i).append(" ");
         }
         Collections.reverse(digits);
         return sb.toString();
@@ -202,16 +203,16 @@ public class LargeInteger {
         try {
             BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter a large number: u");
-            String u = bf.readLine().trim();
+            LargeInteger u = new LargeInteger(bf.readLine().trim());
 
             System.out.println("Enter a large number: v");
-            String v = bf.readLine().trim();
+            LargeInteger v = new LargeInteger(bf.readLine().trim());
 
             System.out.printf("U = %s\n", u);
             System.out.printf("V = %s\n", v);
             System.out.println("Product u*v =");
 
-            System.out.println(prod(new LargeInteger(u), new LargeInteger(v)));
+            System.out.println(prod(u,v));
 
         } catch (IOException e) {
 
