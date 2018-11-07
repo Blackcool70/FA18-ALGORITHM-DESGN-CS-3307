@@ -55,7 +55,16 @@ public class LargeInteger {
         }
         return result;
     }
-
+    //raises a number 10 ^k
+    private static LargeInteger sPow(LargeInteger a, int k){
+        LargeInteger result = new LargeInteger(a);
+        Collections.reverse(result.digits);
+        for(int i = 0; i < k; ++i){
+            result.digits.add(0);
+        }
+        Collections.reverse(result.digits);
+        return  result;
+    }
     //divies to 10^k
     private static LargeInteger sDiv(LargeInteger a, int k){
         StringBuilder sb = new StringBuilder();
