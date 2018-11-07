@@ -10,7 +10,7 @@ import java.util.Iterator;
  * 2018FA ALGORITHM DESGN/ANAL (CS-3307-01)
  * This program allows the user to multiply 2 large natural numbers.
  * The functions  that start with s stand for "special" as they do not
- * reflect an actual operations on special cases used for this project.
+ * reflect the actual operations only special cases used for this project.
  */
 public class LargeInteger {
     private ArrayList<Integer> digits;
