@@ -55,6 +55,19 @@ public class LargeInteger {
         }
         return result;
     }
+    //returns the  mod 10^k
+    private static LargeInteger sMod(LargeInteger a, int k){
+        LargeInteger result ;
+        if(k > 0){
+            result = new LargeInteger(a);
+            result.digits.clear();
+            for(int i = 0; i < k; ++i)
+                result.digits.add(a.digits.get(i));
+        }else {
+            result = new LargeInteger("0");
+        }
+        return result;
+    }
     //raises a number 10 ^k
     private static LargeInteger sPow(LargeInteger a, int k){
         LargeInteger result = new LargeInteger(a);
@@ -108,10 +121,8 @@ public class LargeInteger {
     public static void main(String[] args) {
         LargeInteger a = new LargeInteger("12379");
         LargeInteger b = new LargeInteger("28");
-        LargeInteger c = LargeInteger.add(a, b);
-        LargeInteger d = LargeInteger.sDiv(a,2);
-        LargeInteger e = LargeInteger.sPow(b,2);
-        System.out.printf("%s\n", e);
+        LargeInteger c =  LargeInteger.sDiv(a,3);
+        System.out.printf("%s\n", c);
 
     }
 }
