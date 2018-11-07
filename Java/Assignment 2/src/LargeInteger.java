@@ -11,9 +11,10 @@ import java.util.Iterator;
  * This program allows the user to multiply 2 large natural numbers.
  * The functions  that start with s stand for "special" as they do not
  * reflect an actual operations on special cases used for this project.
- * */
+ */
 public class LargeInteger {
     private ArrayList<Integer> digits;
+
     /**
      * Creates a LargeInteger which can hold and multiply bigger numbers.
      */
@@ -33,6 +34,7 @@ public class LargeInteger {
 
     /**
      * Copy constructor creates a deep copy
+     *
      * @param other another LargeInteger
      */
     private LargeInteger(LargeInteger other) {
@@ -41,9 +43,10 @@ public class LargeInteger {
 
     /**
      * "Natural addition" of two LargeInteger numbers, only works with positives.
-     * @param u  LargeInteger
-     * @param v  Large Integer
-     * @return   the sum of the two LargeIntegers
+     *
+     * @param u LargeInteger
+     * @param v Large Integer
+     * @return the sum of the two LargeIntegers
      */
     private static LargeInteger sAdd(LargeInteger u, LargeInteger v) {
         LargeInteger largest, other, result;
@@ -55,7 +58,7 @@ public class LargeInteger {
             largest = v;
             other = u;
         }
-  //      padWZeros(other, largest.digits.size() - other.digits.size());
+        //      padWZeros(other, largest.digits.size() - other.digits.size());
 
         result = new LargeInteger(other);
         int sum, valu, valv;
@@ -76,29 +79,14 @@ public class LargeInteger {
     }
 
     /**
-     * Helper function, removes any leading zeros mostly for display
-     */
-    private  void removeLeadingZeros(){
-        Iterator<Integer> it = this.digits.iterator();
-        int i = 0;
-        while (it.hasNext() && it.next() == 0) {
-            ++i;
-        }
-        this.digits.subList(0, i).clear();
-        if(this.digits.size() == 0){
-            this.digits.add(0);
-        }
-    }
-
-    /**
      * Returns  a mod 10^k
      */
 
     private static LargeInteger sMod(LargeInteger a, int k) {
         LargeInteger result;
 
-        if(k > a.digits.size()){
-            return  new LargeInteger(a);
+        if (k > a.digits.size()) {
+            return new LargeInteger(a);
         }
         if (k > 0) {
             result = new LargeInteger(a);
@@ -135,6 +123,67 @@ public class LargeInteger {
         return new LargeInteger(sb.reverse().toString());
     }
 
+    private static LargeInteger prod(LargeInteger u, LargeInteger v) {
+        LargeInteger x, y, w, z;
+        int n, m, uSize, vSize;
+        uSize = u.digits.size();
+        vSize = v.digits.size();
+        n = (uSize > vSize) ? uSize : vSize;
+        if (u.isZero() || v.isZero()) {
+            return new LargeInteger("0");
+        } else if (n <= 1) {
+            return new LargeInteger(Integer.toString(u.digits.get(0) * v.digits.get(0)));
+        }
+        m = Math.floorDiv(n, 2);
+        x = LargeInteger.sDiv(u, m);
+        w = LargeInteger.sDiv(v, m);
+
+        y = LargeInteger.sMod(u, m);
+        z = LargeInteger.sMod(v, m);
+
+        return sAdd(sPow(prod(x, w), 2 * m), sAdd(sPow(sAdd(prod(x, z), prod(w, y)), m), prod(y, z)));
+    }
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("Enter a large number: u");
+            LargeInteger u = new LargeInteger(bf.readLine().trim());
+
+            System.out.println("Enter a large number: v");
+            LargeInteger v = new LargeInteger(bf.readLine().trim());
+
+            System.out.printf("U = %s\n", u);
+            System.out.printf("V = %s\n", v);
+            System.out.println("Product u*v =");
+
+            long startTime = System.nanoTime();
+            System.out.println(prod(u, v));
+            long endTime = System.nanoTime();
+            System.out.println("Took " + (endTime - startTime) / Math.pow(10, 9) + "sec");
+
+        } catch (IOException e) {
+
+            System.err.println("Input errors! Aborting!");
+            System.err.println(e);
+        }
+    }
+
+    /**
+     * Helper function, removes any leading zeros mostly for display
+     */
+    private void removeLeadingZeros() {
+        Iterator<Integer> it = this.digits.iterator();
+        int i = 0;
+        while (it.hasNext() && it.next() == 0) {
+            ++i;
+        }
+        this.digits.subList(0, i).clear();
+        if (this.digits.size() == 0) {
+            this.digits.add(0);
+        }
+    }
+
     /**
      * @return string representation of a LargeInteger
      */
@@ -143,7 +192,7 @@ public class LargeInteger {
         Collections.reverse(digits);
         removeLeadingZeros();
         for (int i : digits) {
-                sb.append(i).append(" ");
+            sb.append(i).append(" ");
         }
         Collections.reverse(digits);
         return sb.toString();
@@ -177,50 +226,8 @@ public class LargeInteger {
         return false;
     }
 
-    private boolean isZero(){
+    private boolean isZero() {
         return !(this.toString().matches("[^0]+"));
 
-    }
-    private static LargeInteger prod(LargeInteger u, LargeInteger v) {
-        LargeInteger x, y, w, z;
-        int n, m, uSize, vSize;
-        uSize = u.digits.size();
-        vSize = v.digits.size();
-        n = (uSize > vSize) ? uSize : vSize;
-        if (u.isZero()|| v.isZero()) {
-            return new LargeInteger("0");
-        } else if (n <= 1) {
-            return new LargeInteger(Integer.toString(u.digits.get(0) * v.digits.get(0)));
-        }
-        m = Math.floorDiv(n, 2);
-        x = LargeInteger.sDiv(u, m);
-        w = LargeInteger.sDiv(v, m);
-
-        y = LargeInteger.sMod(u, m);
-        z = LargeInteger.sMod(v, m);
-
-        return sAdd(sPow(prod(x, w), 2 * m), sAdd(sPow(sAdd(prod(x, z), prod(w, y)), m), prod(y, z)));
-    }
-
-    public static void main(String[] args) {
-        try {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Enter a large number: u");
-            LargeInteger u = new LargeInteger(bf.readLine().trim());
-
-            System.out.println("Enter a large number: v");
-            LargeInteger v = new LargeInteger(bf.readLine().trim());
-
-            System.out.printf("U = %s\n", u);
-            System.out.printf("V = %s\n", v);
-            System.out.println("Product u*v =");
-
-            System.out.println(prod(u,v));
-
-        } catch (IOException e) {
-
-            System.err.println("Input errors! Aborting!");
-            System.err.println(e);
-        }
     }
 }
