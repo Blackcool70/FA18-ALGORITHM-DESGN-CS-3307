@@ -3,20 +3,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
+/**
+ * Jecsan Blanco
+ * 2018FA ALGORITHM DESGN/ANAL (CS-3307-01)
+ * This program allows the user to multiply 2 large natural numbers.
+ */
 public class LargeInteger {
     private ArrayList<Integer> digits;
-
     private LargeInteger(String s) {
         StringBuilder sb = new StringBuilder(s);
         sb = sb.reverse();
         digits = new ArrayList<>(s.length());
-        int val = 0;
         if (s.length() != 0) {
             //adds the digits backwards for easier growth;
             for (char c : sb.toString().toCharArray()) {
-                val = c & 0x0F;
-                digits.add(val);
+                digits.add(c & 0x0F);
             }
         } else {
             digits.add(0);
@@ -24,15 +27,15 @@ public class LargeInteger {
     }
 
     private LargeInteger(LargeInteger other) {
-        this.digits = (ArrayList<Integer>) other.digits.clone();
+        this.digits = new ArrayList<>(other.digits);
     }
 
-    private static void padWZeros(LargeInteger a, int n) {
-        while (n > 0) {
-            a.digits.add(0);
-            --n;
-        }
-    }
+//    private static void padWZeros(LargeInteger a, int n) {
+//        while (n > 0) {
+//            a.digits.add(0);
+//            --n;
+//        }
+//    }
 
     public static LargeInteger add(LargeInteger u, LargeInteger v) {
         LargeInteger largest, other, result;
@@ -44,7 +47,7 @@ public class LargeInteger {
             largest = v;
             other = u;
         }
-        padWZeros(other, largest.digits.size() - other.digits.size());
+  //      padWZeros(other, largest.digits.size() - other.digits.size());
 
         result = new LargeInteger(other);
         int sum, valu, valv;
@@ -61,6 +64,17 @@ public class LargeInteger {
         return result;
     }
 
+    private  void removeLeadingZeros(ArrayList<Integer> list){
+        Iterator<Integer> it = list.iterator();
+        int i = 0;
+        while (it.hasNext() && it.next() == 0) {
+            ++i;
+        }
+        list.subList(0, i).clear();
+        if(list.size() == 0){
+            list.add(0);
+        }
+    }
     //returns the  mod 10^k
     private static LargeInteger sMod(LargeInteger a, int k) {
         LargeInteger result;
@@ -97,11 +111,13 @@ public class LargeInteger {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        boolean noZero = false;
+        Collections.reverse(digits);
+        removeLeadingZeros(digits);
         for (int i : digits) {
                 sb.append(i);
         }
-        return sb.reverse().toString();
+        Collections.reverse(digits);
+        return sb.toString();
     }
 
     private boolean equals(LargeInteger other) {
