@@ -97,6 +97,9 @@ public class LargeInteger {
     private static LargeInteger sMod(LargeInteger a, int k) {
         LargeInteger result;
 
+        if(k > a.digits.size()){
+            return  new LargeInteger(a);
+        }
         if (k > 0) {
             result = new LargeInteger(a);
             result.digits.clear();
