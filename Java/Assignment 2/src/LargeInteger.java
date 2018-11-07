@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -96,8 +95,9 @@ public class LargeInteger {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        boolean noZero = false;
         for (int i : digits) {
-            sb.append(i);
+                sb.append(i);
         }
         return sb.reverse().toString();
     }
@@ -149,7 +149,17 @@ public class LargeInteger {
     public static void main(String[] args) {
         try {
             BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("Enter a large number: u");
+            String u = bf.readLine().trim();
 
+            System.out.println("Enter a large number: v");
+            String v = bf.readLine().trim();
+
+            System.out.printf("U = %s\n", u);
+            System.out.printf("V = %s\n", v);
+            System.out.println("Product u*v =");
+
+            System.out.println(prod(new LargeInteger(u), new LargeInteger(v)));
 
         } catch (IOException e) {
 
