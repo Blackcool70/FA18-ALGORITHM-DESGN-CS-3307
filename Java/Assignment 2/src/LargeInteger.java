@@ -9,6 +9,8 @@ import java.util.Iterator;
  * Jecsan Blanco
  * 2018FA ALGORITHM DESGN/ANAL (CS-3307-01)
  * This program allows the user to multiply 2 large natural numbers.
+ * The functions  that start with s stand for "special" as they do not
+ * reflect an actual operations on special cases used for this project.
  */
 public class LargeInteger {
     private ArrayList<Integer> digits;
@@ -32,12 +34,12 @@ public class LargeInteger {
 
 //    private static void padWZeros(LargeInteger a, int n) {
 //        while (n > 0) {
-//            a.digits.add(0);
+//            a.digits.sAdd(0);
 //            --n;
 //        }
 //    }
 
-    public static LargeInteger add(LargeInteger u, LargeInteger v) {
+    private static LargeInteger sAdd(LargeInteger u, LargeInteger v) {
         LargeInteger largest, other, result;
         if (u.isGreaterThan(v)) {
             largest = u;
@@ -64,15 +66,15 @@ public class LargeInteger {
         return result;
     }
 
-    private  void removeLeadingZeros(ArrayList<Integer> list){
-        Iterator<Integer> it = list.iterator();
+    private  void removeLeadingZeros(){
+        Iterator<Integer> it = this.digits.iterator();
         int i = 0;
         while (it.hasNext() && it.next() == 0) {
             ++i;
         }
-        list.subList(0, i).clear();
-        if(list.size() == 0){
-            list.add(0);
+        this.digits.subList(0, i).clear();
+        if(this.digits.size() == 0){
+            this.digits.add(0);
         }
     }
     //returns the  mod 10^k
@@ -112,7 +114,7 @@ public class LargeInteger {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         Collections.reverse(digits);
-        removeLeadingZeros(digits);
+        removeLeadingZeros();
         for (int i : digits) {
                 sb.append(i);
         }
@@ -122,6 +124,8 @@ public class LargeInteger {
 
     private boolean equals(LargeInteger other) {
         if (this == other) return true;
+        this.removeLeadingZeros();
+        other.removeLeadingZeros();
         return this.digits.equals(other.digits);
     }
 
@@ -165,7 +169,7 @@ public class LargeInteger {
         y = LargeInteger.sMod(u, m);
         z = LargeInteger.sMod(v, m);
 
-        return add(sPow(prod(x, w), 2 * m), add(sPow(add(prod(x, z), prod(w, y)), m), prod(y, z)));
+        return sAdd(sPow(prod(x, w), 2 * m), sAdd(sPow(sAdd(prod(x, z), prod(w, y)), m), prod(y, z)));
     }
 
     public static void main(String[] args) {
