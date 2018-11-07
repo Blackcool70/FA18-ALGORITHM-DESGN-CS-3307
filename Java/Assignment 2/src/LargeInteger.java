@@ -11,9 +11,12 @@ import java.util.Iterator;
  * This program allows the user to multiply 2 large natural numbers.
  * The functions  that start with s stand for "special" as they do not
  * reflect an actual operations on special cases used for this project.
- */
+ * */
 public class LargeInteger {
     private ArrayList<Integer> digits;
+    /**
+     * Creates a LargeInteger which can hold and multiply bigger numbers.
+     */
     private LargeInteger(String s) {
         StringBuilder sb = new StringBuilder(s);
         sb = sb.reverse();
@@ -28,17 +31,20 @@ public class LargeInteger {
         }
     }
 
+    /**
+     * Copy constructor creates a deep copy
+     * @param other another LargeInteger
+     */
     private LargeInteger(LargeInteger other) {
         this.digits = new ArrayList<>(other.digits);
     }
 
-//    private static void padWZeros(LargeInteger a, int n) {
-//        while (n > 0) {
-//            a.digits.sAdd(0);
-//            --n;
-//        }
-//    }
-
+    /**
+     * "Natural addition" of two LargeInteger numbers, only works with positives.
+     * @param u  LargeInteger
+     * @param v  Large Integer
+     * @return   the sum of the two LargeIntegers
+     */
     private static LargeInteger sAdd(LargeInteger u, LargeInteger v) {
         LargeInteger largest, other, result;
         if (u.isGreaterThan(v)) {
@@ -57,15 +63,21 @@ public class LargeInteger {
         for (int i = 0; i < largest.digits.size(); ++i) {
             next = i + 1;
             valu = largest.digits.get(i);
+            //carried over to bigger than ordinal list.
             if (next >= result.digits.size()) result.digits.add(0);
             valv = result.digits.get(i);
             sum = valu + valv;
+            //carry
             result.digits.set(next, result.digits.get(next) + sum / 10);
+            //remainder
             result.digits.set(i, sum % 10);
         }
         return result;
     }
 
+    /**
+     * Helper function, removes any leading zeros mostly for display
+     */
     private  void removeLeadingZeros(){
         Iterator<Integer> it = this.digits.iterator();
         int i = 0;
@@ -77,7 +89,11 @@ public class LargeInteger {
             this.digits.add(0);
         }
     }
-    //returns the  mod 10^k
+
+    /**
+     * Returns  a mod 10^k
+     */
+
     private static LargeInteger sMod(LargeInteger a, int k) {
         LargeInteger result;
         if (k > 0) {
@@ -91,7 +107,9 @@ public class LargeInteger {
         return result;
     }
 
-    //raises a number 10 ^k
+    /**
+     * @return a * 10^k
+     */
     private static LargeInteger sPow(LargeInteger a, int k) {
         LargeInteger result = new LargeInteger(a);
         Collections.reverse(result.digits);
@@ -102,7 +120,9 @@ public class LargeInteger {
         return result;
     }
 
-    //divies to 10^n
+    /**
+     * @return a / 10^k
+     */
     private static LargeInteger sDiv(LargeInteger a, int k) {
         StringBuilder sb = new StringBuilder();
         for (int i = k; i < a.digits.size(); ++i) {
@@ -111,6 +131,9 @@ public class LargeInteger {
         return new LargeInteger(sb.reverse().toString());
     }
 
+    /**
+     * @return string representation of a LargeInteger
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         Collections.reverse(digits);
@@ -122,6 +145,9 @@ public class LargeInteger {
         return sb.toString();
     }
 
+    /**
+     * @return if the two objects are equal
+     */
     private boolean equals(LargeInteger other) {
         if (this == other) return true;
         this.removeLeadingZeros();
@@ -151,7 +177,7 @@ public class LargeInteger {
         return !(this.toString().matches("[^0]+"));
 
     }
-    public static LargeInteger prod(LargeInteger u, LargeInteger v) {
+    private static LargeInteger prod(LargeInteger u, LargeInteger v) {
         LargeInteger x, y, w, z;
         int n, m, uSize, vSize;
         uSize = u.digits.size();
