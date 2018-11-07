@@ -11,10 +11,12 @@ public class LargeInteger {
         StringBuilder sb = new StringBuilder(s);
         sb = sb.reverse();
         digits = new ArrayList<>(s.length());
+        int val = 0;
         if (s.length() != 0) {
             //adds the digits backwards for easier growth;
             for (char c : sb.toString().toCharArray()) {
-                digits.add(c & 0x0F);
+                val = c & 0x0F;
+                digits.add(val);
             }
         } else {
             digits.add(0);
@@ -125,13 +127,17 @@ public class LargeInteger {
         return false;
     }
 
+    private boolean isZero(){
+        return !(this.toString().matches("[^0]+"));
+
+    }
     public static LargeInteger prod(LargeInteger u, LargeInteger v) {
         LargeInteger x, y, w, z;
         int n, m, uSize, vSize;
         uSize = u.digits.size();
         vSize = v.digits.size();
         n = (uSize > vSize) ? uSize : vSize;
-        if (Integer.parseInt(u.toString()) == 0 || Integer.parseInt(v.toString()) == 0) {
+        if (u.isZero()|| v.isZero()) {
             return new LargeInteger("0");
         } else if (n <= 1) {
             return new LargeInteger(Integer.toString(u.digits.get(0) * v.digits.get(0)));
