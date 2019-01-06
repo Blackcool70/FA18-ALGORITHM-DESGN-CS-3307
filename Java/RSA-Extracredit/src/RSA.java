@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * @author Jecasn Blanco
+ * @author Jecsan Blanco
  * @version 1.0
  * @since 10-14-2018
  * WTAMU
@@ -101,13 +101,6 @@ public class RSA {
             }
             encryptedMessage[i++] = encrypted_number;
         }
-
-//        System.out.println("Encrypted:");
-//        for(int j : encrypted){
-//            System.out.printf("%d ",j);
-//        }
-//        System.out.println();
-
         return encryptedMessage;
 
     }
@@ -147,11 +140,6 @@ public class RSA {
             encoded[i] = encodeKey.indexOf(message.charAt(++j)) * 100; // first
             encoded[i] += encodeKey.indexOf(message.charAt(++j));  // second
         }
-
-//        System.out.println("Encoded:");
-//        for(int i : encoded){
-//            System.out.printf("%d ",i);
-//        }
         System.out.println();
         return encoded;
     }
@@ -270,12 +258,6 @@ public class RSA {
         char selection = ' ';
         try {
             while (true) {
-//                System.out.println("TESTING ----------------");
-//                System.out.printf("GCD( 71,41_ = %d",gcd(71,41));
-//                System.out.printf("coprime?( 32,54) = %b",areCoPrime(71,41));
-//                System.out.println();
-//                System.out.println("TESTING ----------------");
-
                 System.out.println("Welcome the Encryptonator v2.0 (copyright Allsafe Inc)");
                 System.out.println("This program only works if correct input is provided and messages are less than 6 chars.");
                 System.out.println("only A-Za-z and space are valid chars");
